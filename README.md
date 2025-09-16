@@ -21,5 +21,6 @@
 2. `index.html` をブラウザで開く
 3. 設定パネルから各種カスタマイズが可能
 
-## 使用素材
+## Special Thanks
 - [Material Symbols and Icons](https://fonts.google.com/icons)
+- [ChatGPT](https://chatgpt.com)
