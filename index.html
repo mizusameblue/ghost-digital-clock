@@ -3,350 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ghost Digital Clock</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <title>Ghost Digital Clock：マウスオーバーで表示されるシンプルなデジタル時計</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 </head>
 <body>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
-<style>
-:root {
-  --bg-color: #000;
-  --clock-color: #fff;
-  --font-family: "Arial", "Helvetica", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif;
-  --fade-speed: 0.4s;
-}
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-color);
-  overflow: hidden;
-}
-.material-symbols-rounded {
-  font-variation-settings:
-  'FILL' 1,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
-}
-.hidden {
-  opacity: 0;
-}
-
-#clock-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-#clock, #date {
-  font-family: var(--font-family);
-  color: var(--clock-color);
-  white-space: nowrap;
-  text-align: center;
-  user-select: none;
-  margin: 0;
-  transition: opacity var(--fade-speed) ease;
-}
-
-#button-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0 16px;
-}
-.float-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(40,40,40,0.9);
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s, opacity var(--fade-speed) ease;
-  border: none;
-}
-.float-btn:hover {
-  background: rgba(80,80,80,0.9);
-}
-.float-btn.hidden {
-  pointer-events: none;
-}
+  <div id="clock-container">
+    <div id="date">----/--/-- (---)</div>
+    <div id="time">--:--:--</div>
+  </div>
   
-#settings-panel {
-  position: fixed;
-  right: 80px;
-  bottom: 80px;
-  background: rgba(30,30,30,0.95);
-  color: #fff;
-  padding: 16px;
-  border-radius: 8px;
-  width: 240px;
-  font-family: sans-serif;
-  font-size: 14px;
-  display: none;
-  z-index: 2;
-}
-#settings-panel h3 {
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  font-weight: bold;
-}
-#settings-panel label {
-  display: block;
-  margin: 8px 0;
-}
-#settings-panel input[type="color"], #settings-panel select {
-  width: 100%;
-  margin-top: 4px;
-}
-</style>
-
-<div id="clock-container">
-  <div id="date">----/--/-- (---)</div>
-  <div id="clock">--:--:--</div>
-</div>
-
-<div id="button-container">
-  <button id="info-btn" class="float-btn" title="このアプリについて"><span class="material-symbols-rounded">info_i</span></button>
-  <button id="settings-btn" class="float-btn" title="設定"><span class="material-symbols-rounded">settings</span></button>
-  <button id="fullscreen-btn" class="float-btn" title="全画面切替"><span class="material-symbols-rounded">fullscreen</span></button>
-</div>
-
-<div id="settings-panel">
-  <h3>設定</h3>
-  <label>背景色:<input type="color" id="bg-picker" value="#000000"></label>
-  <label>文字色:<input type="color" id="color-picker" value="#ffffff"></label>
-  <label>フォント:
-    <select id="font-select">
-      <option value='"Arial", "Helvetica", "メイリオ", "ヒラギノ角ゴ Pro W3",  sans-serif'>ゴシック</option>
-      <option value='"Times New Roman", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "HiraMinProN-W3", "HGS明朝E", "ＭＳ Ｐ明朝", "MS PMincho", serif'>明朝</option>
-    </select>
-  </label>
-  <label>時計サイズ:
-    <select id="size-select">
-      <option value="small">小</option>
-      <option value="medium">中</option>
-      <option value="large">大</option>
-      <option value="xlarge">特大</option>
-    </select>
-  </label>
-  <label>時刻形式:
-    <select id="hour-format">
-      <option value="24" selected>24時間</option>
-      <option value="12">12時間</option>
-    </select>
-  </label>
-  <label>日付位置:
-    <select id="date-pos">
-      <option value="top">上</option>
-      <option value="bottom">下</option>
-    </select>
-  </label>
-  <label><input type="checkbox" id="hover-toggle">マウスオーバー時のみ表示</label>
-  <label><input type="checkbox" id="date-toggle" checked>日付表示</label>
-  <label><input type="checkbox" id="sec-toggle" checked>秒表示</label>
-</div>
-
-<script>
-(() => {
-  const DOM = {
-    clock: document.getElementById('clock'),
-    date: document.getElementById('date'),
-    clockContainer: document.getElementById('clock-container'),
-    settingsBtn: document.getElementById('settings-btn'),
-    fullscreenBtn: document.getElementById('fullscreen-btn'),
-    infoBtn: document.getElementById('info-btn'),
-    settingsPanel: document.getElementById('settings-panel')
-  };
-
-  const settingsInputs = {
-    bg: document.getElementById('bg-picker'),
-    color: document.getElementById('color-picker'),
-    font: document.getElementById('font-select'),
-    size: document.getElementById('size-select'),
-    hover: document.getElementById('hover-toggle'),
-    date: document.getElementById('date-toggle'),
-    sec: document.getElementById('sec-toggle'),
-    hour: document.getElementById('hour-format'),
-    datePos: document.getElementById('date-pos')
-  };
-
-  const uiElements = [DOM.clock, DOM.date, DOM.settingsBtn, DOM.fullscreenBtn];
-  const STORAGE_KEY = "fullscreen-clock-settings";
-  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-
-  // localStorage ラッパー
-  const storage = {
-    save: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
-    load: (key, fallback = null) => {
-      try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-      } catch {
-        localStorage.removeItem(key);
-        return fallback;
-      }
-    }
-  };
-
-  // フォントサイズ制御
-  const SIZE_MAP = {
-    small: 0.75,
-    medium: 1.0,
-    large: 1.25,
-    xlarge: 1.5
-  };
-
-  const two = n => String(n).padStart(2, '0');
-
-  const fitClockSize = () => {
-    const ratio = SIZE_MAP[settingsInputs.size.value] || 1.0;
-    const minFont = 40 * ratio;
-    const maxFont = 200 * ratio;
-    const target = 10 * ratio;
-    DOM.clock.style.fontSize = `clamp(${minFont}px, ${target}vw, ${maxFont}px)`;
-    if (settingsInputs.date.checked) {
-      DOM.date.style.fontSize = `clamp(${minFont * 0.4}px, ${target * 0.4}vw, ${maxFont * 0.4}px)`;
-    }
-  };
-
-  const getTimeString = () => {
-    const d = new Date();
-    let h = d.getHours();
-    let ampm = "";
-    if (settingsInputs.hour.value === "12") {
-      ampm = h >= 12 ? "PM" : "AM";
-      h = h % 12 || 12;
-    }
-    const hh = two(h), mm = two(d.getMinutes()), ss = two(d.getSeconds());
-    return settingsInputs.hour.value === "12"
-      ? (settingsInputs.sec.checked ? `${ampm} ${hh}:${mm}:${ss}` : `${ampm} ${hh}:${mm}`)
-      : (settingsInputs.sec.checked ? `${hh}:${mm}:${ss}` : `${hh}:${mm}`);
-  };
-
-  const getDateString = () => {
-    const d = new Date();
-    return `${d.getFullYear()}/${two(d.getMonth() + 1)}/${two(d.getDate())} (${weekdays[d.getDay()]})`;
-  };
-
-  const updateClock = () => {
-    DOM.clock.textContent = getTimeString();
-    DOM.date.textContent = getDateString();
-    DOM.date.style.display = settingsInputs.date.checked ? "block" : "none";
-    DOM.clockContainer.style.flexDirection = settingsInputs.datePos.value === "top" ? "column" : "column-reverse";
-    fitClockSize();
-    requestAnimationFrame(updateClock);
-  };
-
-  // スタイル反映
-  const applyStyleChanges = () => {
-    document.body.style.background = settingsInputs.bg.value;
-    DOM.clock.style.color = DOM.date.style.color = settingsInputs.color.value;
-    DOM.clock.style.fontFamily = DOM.date.style.fontFamily = settingsInputs.font.value;
-    fitClockSize();
-  };
-
-  // UI表示/非表示
-  const showAll = () => uiElements.forEach(el => el.classList.remove('hidden'));
-  const hideAll = () => {
-    if (settingsInputs.hover.checked) {
-      uiElements.forEach(el => el.classList.add('hidden'));
-      DOM.settingsPanel.style.display = 'none';
-    }
-  };
-
-  window.addEventListener('mouseleave', hideAll);
-  window.addEventListener('mouseenter', showAll);
-
-  // 設定UI操作
-  DOM.settingsBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    DOM.settingsPanel.style.display = DOM.settingsPanel.style.display === 'block' ? 'none' : 'block';
-  });
-  document.addEventListener('click', e => {
-    if (DOM.settingsPanel.style.display === 'block' && !DOM.settingsPanel.contains(e.target) && e.target !== DOM.settingsBtn) {
-      DOM.settingsPanel.style.display = 'none';
-    }
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === "Escape" && DOM.settingsPanel.style.display === 'block') {
-      DOM.settingsPanel.style.display = 'none';
-    }
-  });
-
-  // 全画面切替
-  DOM.fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen();
-    }
-  });
-  document.addEventListener('fullscreenchange', () => {
-    DOM.fullscreenBtn.innerHTML = document.fullscreenElement
-      ? '<span class="material-symbols-rounded">fullscreen_exit</span>'
-      : '<span class="material-symbols-rounded">fullscreen</span>';
-  });
-
-  // 設定保存/ロード
-  const saveSettings = () => {
-    const s = {};
-    Object.entries(settingsInputs).forEach(([key, el]) => {
-      if (!el) return;
-      s[key] = el.type === 'checkbox' ? el.checked : el.value;
-    });
-    storage.save(STORAGE_KEY, s);
-  };
-
-  const applySettings = s => {
-    if (!s) return;
-    Object.entries(s).forEach(([key, value]) => {
-      const el = settingsInputs[key];
-      if (!el) return;
-      if (el.type === 'checkbox') {
-        el.checked = value;
-      } else {
-        el.value = value;
-      }
-    });
-    applyStyleChanges();
-  };
-
-  const loadSettings = () => {
-    const s = storage.load(STORAGE_KEY);
-    if (s) applySettings(s);
-  };
+  <div id="btn-container">
+    <a id="information-btn" class="float-btn" title="このアプリについて" href="https://github.com/mizusameblue/ghost-digital-clock" target="_blank"><span class="material-symbols-rounded">info_i</span></a>
+    <button id="settings-btn" class="float-btn" title="設定"><span class="material-symbols-rounded">settings</span></button>
+    <button id="fullscreen-btn" class="float-btn" title="全画面切替"><span class="material-symbols-rounded">fullscreen</span></button>
+  </div>
   
-  Object.entries(settingsInputs).forEach(([key, el]) => {
-    if (!el) return;
-    if (['bg', 'color', 'font', 'size'].includes(key)) {
-      el.addEventListener('change', applyStyleChanges);
-      if (key === 'bg' || key === 'color') {
-        el.addEventListener('input', applyStyleChanges);
-      }
-    }
-    el.addEventListener('change', saveSettings);
-  });
-  
-  // 初期化
-  loadSettings();
-  requestAnimationFrame(updateClock);
+  <div id="settings-panel">
+    <h3>設定</h3>
+    <label>背景色:<input type="color" id="bgPicker" value="#000000"></label>
+    <label>文字色:<input type="color" id="colorPicker" value="#ffffff"></label>
+    <label>フォント:
+      <select id="fontSelect">
+        <option value='"Arial", "Helvetica", "メイリオ", "ヒラギノ角ゴ Pro W3",  sans-serif' selected>ゴシック</option>
+        <option value='"Times New Roman", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "HiraMinProN-W3", "HGS明朝E", "ＭＳ Ｐ明朝", "MS PMincho", serif'>明朝</option>
+      </select>
+    </label>
+    <label>時計サイズ:
+      <select id="sizeSelect">
+        <option value="small">小</option>
+        <option value="medium" selected>中</option>
+        <option value="large">大</option>
+        <option value="xlarge">特大</option>
+      </select>
+    </label>
+    <label>時刻形式:
+      <select id="hourFormat">
+        <option value="24" selected>24時間</option>
+        <option value="12">12時間</option>
+      </select>
+    </label>
+    <label>日付位置:
+      <select id="datePos">
+        <option value="top" selected>上</option>
+        <option value="bottom">下</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="hoverToggle">マウスオーバー時のみ表示</label>
+    <label><input type="checkbox" id="dateToggle" checked>日付表示</label>
+    <label><input type="checkbox" id="secToggle" checked>秒表示</label>
+  </div>
 
-})();
-</script>
-
+  <script src="script.js"/>
 </body>
 </html>
