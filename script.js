@@ -1,31 +1,44 @@
 (() => {
+  // ==============================
+  // DOM 要素取得
+  // ==============================
   const DOM = {
     clockContainer: document.getElementById('clock-container'),
     date: document.getElementById('date'),
     time: document.getElementById('time'),
     btnContainer: document.getElementById('btn-container'),
     settingsBtn: document.getElementById('settings-btn'),
-    fullscreenBtn: document.getElementById('fullscreen-btn'),
     panel: document.getElementById('settings-panel')
   };
 
   const settingsInputs = {
-    bg: document.getElementById('bgPicker'),
-    color: document.getElementById('colorPicker'),
-    font: document.getElementById('fontSelect'),
-    size: document.getElementById('sizeSelect'),
-    hover: document.getElementById('hoverToggle'),
-    date: document.getElementById('dateToggle'),
-    sec: document.getElementById('secToggle'),
-    hour: document.getElementById('hourFormat'),
-    datePos: document.getElementById('datePos')
+    bg: document.getElementById('bg-picker'),
+    color: document.getElementById('color-picker'),
+    font: document.getElementById('font-select'),
+    size: document.getElementById('size-select'),
+    hover: document.getElementById('hover-toggle'),
+    date: document.getElementById('date-toggle'),
+    sec: document.getElementById('sec-toggle'),
+    hour: document.getElementById('hour-format'),
+    datePos: document.getElementById('date-pos')
   };
 
   const uiElements = [DOM.clockContainer, DOM.btnContainer];
   const STORAGE_KEY = "fullscreen-clock-settings";
   const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
-  // localStorage ラッパー
+  const SIZE_MAP = {
+    small: 0.75,
+    medium: 1.0,
+    large: 1.25,
+    xlarge: 1.5
+  };
+
+  // ==============================
+  // ユーティリティ関数
+  // ==============================
+  const two = n => String(n).padStart(2, '0');
+
   const storage = {
     save: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
     load: (key, fallback = null) => {
@@ -39,16 +52,9 @@
     }
   };
 
-  // フォントサイズ制御
-  const SIZE_MAP = {
-    small: 0.75,
-    medium: 1.0,
-    large: 1.25,
-    xlarge: 1.5
-  };
-
-  const two = n => String(n).padStart(2, '0');
-
+  // ==============================
+  // クロック関連
+  // ==============================
   const fitClockSize = () => {
     const ratio = SIZE_MAP[settingsInputs.size.value] || 1.0;
     const minFont = 40 * ratio;
@@ -88,7 +94,9 @@
     requestAnimationFrame(updateClock);
   };
 
-  // スタイル反映
+  // ==============================
+  // スタイル適用
+  // ==============================
   const applyStyleChanges = () => {
     document.body.style.background = settingsInputs.bg.value;
     DOM.time.style.color = DOM.date.style.color = settingsInputs.color.value;
@@ -96,7 +104,9 @@
     fitClockSize();
   };
 
-  // UI表示/非表示
+  // ==============================
+  // UI 表示・非表示
+  // ==============================
   const showAll = () => uiElements.forEach(el => el.classList.remove('hidden'));
   const hideAll = () => {
     if (settingsInputs.hover.checked) {
@@ -108,37 +118,26 @@
   document.addEventListener('mouseleave', hideAll);
   document.addEventListener('mouseenter', showAll);
 
-  // 設定UI操作
   DOM.settingsBtn.addEventListener('click', e => {
     e.stopPropagation();
     DOM.panel.style.display = DOM.panel.style.display === 'block' ? 'none' : 'block';
   });
+
   document.addEventListener('click', e => {
     if (DOM.panel.style.display === 'block' && !DOM.panel.contains(e.target) && e.target !== DOM.settingsBtn) {
       DOM.panel.style.display = 'none';
     }
   });
+
   document.addEventListener('keydown', e => {
     if (e.key === "Escape" && DOM.panel.style.display === 'block') {
       DOM.panel.style.display = 'none';
     }
   });
 
-  // 全画面切替
-  DOM.fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen();
-    }
-  });
-  document.addEventListener('fullscreenchange', () => {
-    DOM.fullscreenBtn.innerHTML = document.fullscreenElement
-      ? '<span class="material-symbols-rounded">fullscreen_exit</span>'
-      : '<span class="material-symbols-rounded">fullscreen</span>';
-  });
-
-  // 設定保存/ロード
+  // ==============================
+  // 設定の保存・読み込み
+  // ==============================
   const saveSettings = () => {
     const s = {};
     Object.entries(settingsInputs).forEach(([key, el]) => {
@@ -166,19 +165,24 @@
     const s = storage.load(STORAGE_KEY);
     if (s) applySettings(s);
   };
-  
+
+  // ==============================
+  // 設定イベント登録
+  // ==============================
   Object.entries(settingsInputs).forEach(([key, el]) => {
-  if (!el) return;
-  if (['bg', 'color', 'font', 'size'].includes(key)) {
-    el.addEventListener('change', applyStyleChanges);
-    if (key === 'bg' || key === 'color') {
-      el.addEventListener('input', applyStyleChanges);
+    if (!el) return;
+    if (['bg', 'color', 'font', 'size'].includes(key)) {
+      el.addEventListener('change', applyStyleChanges);
+      if (key === 'bg' || key === 'color') {
+        el.addEventListener('input', applyStyleChanges);
+      }
     }
-  }
-  el.addEventListener('change', saveSettings);
-});
-  
+    el.addEventListener('change', saveSettings);
+  });
+
+  // ==============================
   // 初期化
+  // ==============================
   loadSettings();
   requestAnimationFrame(updateClock);
 
