@@ -8,8 +8,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,7 +18,19 @@ html, body {
   overflow: hidden;
 }
 
-#clockWrapper {
+.material-symbols-rounded {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+.hidden {
+  opacity: 0;
+}
+
+#clock-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,13 +46,18 @@ html, body {
   transition: opacity var(--fade-speed) ease;
 }
 
-.hidden {
-  opacity: 0;
+#button-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0 16px;
 }
 
-button.float-btn {
-  position: fixed;
-  bottom: 20px;
+.float-btn {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -49,63 +66,48 @@ button.float-btn {
   justify-content: center;
   background: rgba(40,40,40,0.9);
   color: #fff;
-  font-size: 22px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   transition: background 0.2s, opacity var(--fade-speed) ease;
-  z-index: 1;
   border: none;
+  text-decoration: none; /* aタグでも見た目が変わらないように */
 }
 
-button.float-btn:hover {
+.float-btn:hover {
   background: rgba(80,80,80,0.9);
 }
 
-button.float-btn.hidden {
+.float-btn.hidden {
   pointer-events: none;
 }
-
-#fullscreen-btn {
-  right: 20px;
-}
-
-#settings-btn {
-  right: 80px;
-}
-
+  
 #settings-panel {
   position: fixed;
   right: 80px;
   bottom: 80px;
   background: rgba(30,30,30,0.95);
   color: #fff;
-  padding: 14px;
+  padding: 16px;
   border-radius: 8px;
   width: 240px;
   font-family: sans-serif;
   font-size: 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.5);
   display: none;
   z-index: 2;
 }
 
 #settings-panel h3 {
   margin: 0 0 8px 0;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
 }
 
 #settings-panel label {
   display: block;
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
-#settings-panel input[type="color"],
+#settings-panel input[type="color"], 
 #settings-panel select {
   width: 100%;
-  margin-top: 3px;
-}
-
-.material-icons {
-  font-size: 24px;
+  margin-top: 4px;
 }
