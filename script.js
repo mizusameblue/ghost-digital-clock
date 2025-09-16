@@ -1,26 +1,27 @@
 (() => {
   const DOM = {
-    clock: document.getElementById('clock'),
-    date: document.getElementById('date'),
     clockContainer: document.getElementById('clock-container'),
+    date: document.getElementById('date'),
+    time: document.getElementById('time'),
+    btnContainer: document.getElementById('btn-container'),
     settingsBtn: document.getElementById('settings-btn'),
     fullscreenBtn: document.getElementById('fullscreen-btn'),
-    settingsPanel: document.getElementById('settings-panel')
+    panel: document.getElementById('settings-panel')
   };
 
   const settingsInputs = {
-    bg: document.getElementById('bg-picker'),
-    color: document.getElementById('color-picker'),
-    font: document.getElementById('font-select'),
-    size: document.getElementById('size-select'),
-    hover: document.getElementById('hover-toggle'),
-    date: document.getElementById('date-toggle'),
-    sec: document.getElementById('sec-toggle'),
-    hour: document.getElementById('hour-format'),
-    datePos: document.getElementById('date-pos')
+    bg: document.getElementById('bgPicker'),
+    color: document.getElementById('colorPicker'),
+    font: document.getElementById('fontSelect'),
+    size: document.getElementById('sizeSelect'),
+    hover: document.getElementById('hoverToggle'),
+    date: document.getElementById('dateToggle'),
+    sec: document.getElementById('secToggle'),
+    hour: document.getElementById('hourFormat'),
+    datePos: document.getElementById('datePos')
   };
 
-  const uiElements = [DOM.clock, DOM.date, DOM.settingsBtn, DOM.fullscreenBtn];
+  const uiElements = [DOM.clockContainer, DOM.btnContainer];
   const STORAGE_KEY = "fullscreen-clock-settings";
   const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -53,7 +54,7 @@
     const minFont = 40 * ratio;
     const maxFont = 200 * ratio;
     const target = 10 * ratio;
-    DOM.clock.style.fontSize = `clamp(${minFont}px, ${target}vw, ${maxFont}px)`;
+    DOM.time.style.fontSize = `clamp(${minFont}px, ${target}vw, ${maxFont}px)`;
     if (settingsInputs.date.checked) {
       DOM.date.style.fontSize = `clamp(${minFont * 0.4}px, ${target * 0.4}vw, ${maxFont * 0.4}px)`;
     }
@@ -79,7 +80,7 @@
   };
 
   const updateClock = () => {
-    DOM.clock.textContent = getTimeString();
+    DOM.time.textContent = getTimeString();
     DOM.date.textContent = getDateString();
     DOM.date.style.display = settingsInputs.date.checked ? "block" : "none";
     DOM.clockContainer.style.flexDirection = settingsInputs.datePos.value === "top" ? "column" : "column-reverse";
@@ -90,8 +91,8 @@
   // スタイル反映
   const applyStyleChanges = () => {
     document.body.style.background = settingsInputs.bg.value;
-    DOM.clock.style.color = DOM.date.style.color = settingsInputs.color.value;
-    DOM.clock.style.fontFamily = DOM.date.style.fontFamily = settingsInputs.font.value;
+    DOM.time.style.color = DOM.date.style.color = settingsInputs.color.value;
+    DOM.time.style.fontFamily = DOM.date.style.fontFamily = settingsInputs.font.value;
     fitClockSize();
   };
 
@@ -100,26 +101,26 @@
   const hideAll = () => {
     if (settingsInputs.hover.checked) {
       uiElements.forEach(el => el.classList.add('hidden'));
-      DOM.settingsPanel.style.display = 'none';
+      DOM.panel.style.display = 'none';
     }
   };
 
-  window.addEventListener('mouseleave', hideAll);
-  window.addEventListener('mouseenter', showAll);
+  document.addEventListener('mouseleave', hideAll);
+  document.addEventListener('mouseenter', showAll);
 
   // 設定UI操作
   DOM.settingsBtn.addEventListener('click', e => {
     e.stopPropagation();
-    DOM.settingsPanel.style.display = DOM.settingsPanel.style.display === 'block' ? 'none' : 'block';
+    DOM.panel.style.display = DOM.panel.style.display === 'block' ? 'none' : 'block';
   });
   document.addEventListener('click', e => {
-    if (DOM.settingsPanel.style.display === 'block' && !DOM.settingsPanel.contains(e.target) && e.target !== DOM.settingsBtn) {
-      DOM.settingsPanel.style.display = 'none';
+    if (DOM.panel.style.display === 'block' && !DOM.panel.contains(e.target) && e.target !== DOM.settingsBtn) {
+      DOM.panel.style.display = 'none';
     }
   });
   document.addEventListener('keydown', e => {
-    if (e.key === "Escape" && DOM.settingsPanel.style.display === 'block') {
-      DOM.settingsPanel.style.display = 'none';
+    if (e.key === "Escape" && DOM.panel.style.display === 'block') {
+      DOM.panel.style.display = 'none';
     }
   });
 
@@ -167,15 +168,15 @@
   };
   
   Object.entries(settingsInputs).forEach(([key, el]) => {
-    if (!el) return;
-    if (['bg', 'color', 'font', 'size'].includes(key)) {
-      el.addEventListener('change', applyStyleChanges);
-      if (key === 'bg' || key === 'color') {
-        el.addEventListener('input', applyStyleChanges);
-      }
+  if (!el) return;
+  if (['bg', 'color', 'font', 'size'].includes(key)) {
+    el.addEventListener('change', applyStyleChanges);
+    if (key === 'bg' || key === 'color') {
+      el.addEventListener('input', applyStyleChanges);
     }
-    el.addEventListener('change', saveSettings);
-  });
+  }
+  el.addEventListener('change', saveSettings);
+});
   
   // 初期化
   loadSettings();
