@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>デジタル時計</title>
+  <!-- Material Icons CDN -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- CSS読み込み -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="clockWrapper">
+    <div id="date">----/--/-- (---)</div>
+    <div id="clock">--:--:--</div>
+  </div>
+
+  <button id="fullscreen-btn" class="float-btn" title="全画面切替">
+    <span class="material-icons">fullscreen</span>
+  </button>
+  <button id="settings-btn" class="float-btn" title="設定">
+    <span class="material-icons">settings</span>
+  </button>
+
+  <div id="settings-panel">
+    <h3>設定</h3>
+    <label>背景色:<input type="color" id="bgPicker" value="#000000"></label>
+    <label>文字色:<input type="color" id="colorPicker" value="#ffffff"></label>
+    <label>フォント:
+      <select id="fontSelect">
+        <option value='"Arial", "Helvetica", "メイリオ", "ヒラギノ角ゴ Pro W3",  sans-serif'>ゴシック</option>
+        <option value='"Times New Roman", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", "HiraMinProN-W3", "HGS明朝E", "ＭＳ Ｐ明朝", "MS PMincho", serif'>明朝</option>
+      </select>
+    </label>
+    <label>時計サイズ:
+      <select id="sizeSelect">
+        <option value="small">小</option>
+        <option value="medium">中</option>
+        <option value="large">大</option>
+        <option value="xlarge">特大</option>
+      </select>
+    </label>
+    <label>時刻形式:
+      <select id="hourFormat">
+        <option value="24" selected>24時間</option>
+        <option value="12">12時間</option>
+      </select>
+    </label>
+    <label>日付位置:
+      <select id="datePos">
+        <option value="top">上</option>
+        <option value="bottom">下</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="hoverToggle">マウスオーバー時のみ表示</label>
+    <label><input type="checkbox" id="dateToggle" checked>日付表示</label>
+    <label><input type="checkbox" id="secToggle" checked>秒表示</label>
+  </div>
+
+  <!-- JS読み込み -->
+  <script src="script.js"></script>
+</body>
+</html>
