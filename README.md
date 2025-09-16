@@ -1,6 +1,7 @@
 # Ghost Digital Clock
 
-マウスオーバーで表示される最小限デジタル時計です。  
+マウスオーバーで表示されるシンプルなデジタル時計です。常時時計を表示させておくこともできます。
+
 背景色、文字色、フォント、サイズ、24/12時間表示、日付表示の有無や位置をカスタマイズできます。
 
 ## 機能
@@ -21,6 +22,4 @@
 3. 設定パネルから各種カスタマイズが可能
 
 ## 使用素材
-
-このプロジェクトでは [Material Symbols](https://fonts.google.com/icons) を使用しています。  
-Material Symbols のライセンス: [Apache License 2.0](https://fonts.google.com/icons)
+- [Material Symbols and Icons](https://fonts.google.com/icons)
