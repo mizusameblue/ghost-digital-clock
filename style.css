@@ -48,11 +48,11 @@ html, body {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  left: 24px;
   z-index: 1;
   display: flex;
-  align-items: center;
+  align-items: space-between;
   justify-content: flex-end;
-  gap: 0 16px;
   transition: opacity var(--fade-speed) ease;
 }
 .float-btn {
@@ -77,8 +77,8 @@ html, body {
   
 #settings-panel {
   position: fixed;
-  right: 80px;
-  bottom: 80px;
+  right: 24px;
+  bottom: 88px;
   background: rgba(30,30,30,0.95);
   color: #fff;
   padding: 16px;
