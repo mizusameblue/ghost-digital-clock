@@ -15,7 +15,10 @@
 - 日付の位置を上または下に変更可能
 
 ## 使い方
-1. ページ（https://mizusameblue.github.io/ghost-digital-clock/）を開くと時計が表示されます
+URL：
+https://mizusameblue.github.io/ghost-digital-clock/
+
+1. ページを開くと時計が表示されます
 2. マウスオーバーすると時計が表示され、ボタンで設定が可能です
 3. 設定パネルで色・フォント・サイズ・表示形式を変更できます
 
