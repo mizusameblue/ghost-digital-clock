@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghost Digital Clock：マウスオーバーで表示されるシンプルなデジタル時計</title>
+  <link rel="stylesheet" href="https://mizusameblue.github.io/ghost-digital-clock/style.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+</head>
+<body>
+  <div id="clock">
+    <div id="date">----/--/-- (---)</div>
+    <div id="time">--:--:--</div>
+  </div>
+
+  <details id="settings">
+    <summary title="設定"><span class="material-symbols-rounded">settings</span></summary>
+  
+    <div id="settings-items">
+      <label>背景色：<input type="color" id="bg-color" value="#000000"/></label>
+      <label>文字色：<input type="color" id="font-color" value="#ffffff"/></label>
+  
+      <label>フォントの種類：
+        <select id="font-family">
+          <option value="san-serif" selected>ゴシック体</option>
+          <option value="serif">明朝体</option>
+        </select>
+      </label>
+  
+      <label>日付の位置：
+        <select id="date-pos">
+          <option value="top" selected>上</option>
+          <option value="bottom">下</option>
+        </select>
+      </label>
+  
+      <label><input type="checkbox" id="date-toggle" checked/>日付を表示</label>
+      <label><input type="checkbox" id="second-toggle" checked/>秒を表示</label>
+      <label><input type="checkbox" id="display-toggle"/>時計を常に表示</label>
+  
+      <button id="reset-settings">設定をリセット</button>
+    </div>
+  </details>
+
+  <script src="https://mizusameblue.github.io/ghost-digital-clock/script.js"></script>
+</body>
+</html>
