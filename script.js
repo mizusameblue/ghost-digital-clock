@@ -13,9 +13,11 @@
   const secondToggle = document.getElementById('second-toggle');
   const dateToggle = document.getElementById('date-toggle');
   const resetBtn = document.getElementById('reset-settings');
+  const displayMode = document.getElementById('display-mode'); // ★追加
 
   let reqId = null;
-  
+  let isVisible = false; // ★クリックモード用
+
   // --- Utility ---
   function zeroPad(n) {
     return String(n).padStart(2, "0");
@@ -47,7 +49,8 @@
       datePos: datePos.value,
       dateToggle: dateToggle.checked,
       secondToggle: secondToggle.checked,
-      displayToggle: displayToggle.checked
+      displayToggle: displayToggle.checked,
+      displayMode: displayMode.value // ★追加
     };
     localStorage.setItem("clockSettings", JSON.stringify(settingsData));
   }
@@ -64,15 +67,14 @@
     dateToggle.checked = settingsData.dateToggle;
     secondToggle.checked = settingsData.secondToggle;
     displayToggle.checked = settingsData.displayToggle;
+    displayMode.value = settingsData.displayMode || "hover"; // ★追加 デフォルトは hover
 
     applyStyle();
   }
 
   function resetSettings() {
-    // 保存データ削除
     localStorage.removeItem("clockSettings");
 
-    // デフォルト値
     bgColor.value = "#000000";
     fontColor.value = "#ffffff";
     fontFamily.value = "sans-serif";
@@ -80,9 +82,11 @@
     dateToggle.checked = true;
     secondToggle.checked = true;
     displayToggle.checked = false;
-    
+    displayMode.value = "hover"; // ★追加
+
     applyStyle();
     saveSettings();
+    setDisplayMode(); // ★リセット後もイベント再設定
   }
 
   // --- Style 適用 ---
@@ -111,9 +115,7 @@
   }
 
   function funcStart() {
-    if (reqId === null) {
-      updateClock();
-    }
+    if (reqId === null) updateClock();
     showClock();
   }
 
@@ -125,29 +127,52 @@
     }
   }
 
+  // --- 表示モード変更処理 ★追加 ---
+  function setDisplayMode() {
+    // 既存イベントをいったん解除
+    document.removeEventListener("mouseenter", funcStart);
+    document.removeEventListener("mouseleave", funcEnd);
+    document.removeEventListener("click", toggleClickMode);
+
+    if (displayMode.value === "hover") {
+      document.addEventListener("mouseenter", funcStart);
+      document.addEventListener("mouseleave", funcEnd);
+    } else if (displayMode.value === "click") {
+      document.addEventListener("click", toggleClickMode);
+    }
+  }
+
+  // ★クリックでトグル動作
+  function toggleClickMode() {
+    if (isVisible) funcEnd();
+    else funcStart();
+    isVisible = !isVisible;
+  }
+
   // --- 初期化 ---
   document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
 
-    // 入力変更を保存に結びつける
-    [bgColor, fontColor, fontFamily, datePos, displayToggle, secondToggle, dateToggle].forEach(el => {
+    // 入力変更で保存＆反映
+    [bgColor, fontColor, fontFamily, datePos, displayToggle, secondToggle, dateToggle, displayMode].forEach(el => {
       el.addEventListener("input", () => {
         applyStyle();
         saveSettings();
+        if (el === displayMode) setDisplayMode(); // ★表示モード変更時に再設定
       });
       el.addEventListener("change", () => {
         applyStyle();
         saveSettings();
+        if (el === displayMode) setDisplayMode();
       });
     });
 
     resetBtn.addEventListener("click", resetSettings);
 
-    funcStart();
+    // 表示モード設定反映
+    setDisplayMode();
+
+    // 初期表示
+    if (displayToggle.checked) funcStart();
   });
-
-  // ページ全体でホバー検知
-  document.addEventListener("mouseenter", funcStart);
-  document.addEventListener("mouseleave", funcEnd);
-
 })();
